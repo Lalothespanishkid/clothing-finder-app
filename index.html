@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Social Media Performance Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-tab.active {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #f8f9fa;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .multiselect {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            min-height: 50px;
+        }
+
+        .multiselect-option {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .multiselect-option:hover {
+            background: #5a6fd8;
+            transform: scale(1.05);
+        }
+
+        .multiselect-option.selected {
+            background: #28a745;
+        }
+
+        .multiselect-option .remove {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary {
+            background: #28a745;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #218838;
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .metric-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .metric-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e1e5e9;
+        }
+
+        .data-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .data-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .platform-chart {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .chart-label {
+            width: 120px;
+            font-weight: 500;
+        }
+
+        .chart-bar-visual {
+            flex: 1;
+            height: 30px;
+            background: #e1e5e9;
+            border-radius: 15px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .chart-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 15px;
+            transition: width 0.5s ease;
+        }
+
+        .chart-value {
+            width: 80px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .filter-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        .info-message {
+            background: #d1ecf1;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #bee5eb;
+        }
+
+        .warning-message {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ffeaa7;
+        }
+
+        .export-section {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .row, .filter-row {
+                flex-direction: column;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Social Media Performance Tracker</h1>
+            <p>Track, analyze, and visualize your daily social media performance</p>
+        </div>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" onclick="showTab('daily-entry')">📝 Daily Entry</div>
+            <div class="nav-tab" onclick="showTab('dashboard')">📊 Dashboard</div>
+            <div class="nav-tab" onclick="showTab('analytics')">📈 Analytics</div>
+            <div class="nav-tab" onclick="showTab('data-explorer')">🔍 Data Explorer</div>
+        </div>
+
+        <!-- Daily Entry Tab -->
+        <div id="daily-entry" class="tab-content active">
+            <h2>📝 Daily Social Media Entry</h2>
+            <p>Log your daily social media activity and metrics</p>
+            
+            <form id="entry-form">
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="entry-date">📅 Date</label>
+                            <input type="date" id="entry-date" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>📱 Platforms Used</label>
+                            <div class="multiselect" id="platforms-multiselect">
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Instagram')">Instagram</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'TikTok')">TikTok</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Threads')">Threads</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'X (Twitter)')">X (Twitter)</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Facebook')">Facebook</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'YouTube')">YouTube</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'LinkedIn')">LinkedIn</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'OnlyFans')">OnlyFans</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Fanvue')">Fanvue</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>📝 Post Types</label>
+                            <div class="multiselect" id="post-types-multiselect">
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Video')">Video</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Carousel')">Carousel</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Story')">Story</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Reel')">Reel</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Post')">Post</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Live')">Live</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Poll')">Poll</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Tease')">Tease</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Lifestyle')">Lifestyle</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Selfies')">Selfies</div>
+                                <div class="multiselect-option" onclick="toggleOption(this, 'Memes')">Memes</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col">
+                        <h3>📊 Engagement Metrics</h3>
+                        <div class="form-group">
+                            <label for="followers-gained">👥 New Followers</label>
+                            <input type="number" id="followers-gained" class="form-control" min="0" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="likes">❤️ Total Likes</label>
+                            <input type="number" id="likes" class="form-control" min="0" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="comments">💬 Total Comments</label>
+                            <input type="number" id="comments" class="form-control" min="0" value="0">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="impressions">👁️ Total Impressions/Views</label>
+                            <input type="number" id="impressions" class="form-control" min="0" value="0">
+                        </div>
+                        
+                        <h3>📋 Quick Summary</h3>
+                        <div id="quick-summary">
+                            <p>Fill in the form to see a quick summary</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="problems">🔧 Problems/Issues</label>
+                    <textarea id="problems" class="form-control" rows="3" placeholder="Any technical issues or challenges today?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="thoughts">💭 Thoughts/Reflections</label>
+                    <textarea id="thoughts" class="form-control" rows="3" placeholder="What worked well? What could be improved?"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="next-actions">🎯 Next Actions</label>
+                    <textarea id="next-actions" class="form-control" rows="3" placeholder="What's your plan for tomorrow?"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">💾 Save Entry</button>
+            </form>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content">
+            <h2>📊 Social Media Dashboard</h2>
+            
+            <div id="dashboard-content">
+                <div class="info-message">
+                    No data yet. Add some daily entries to see your dashboard!
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="tab-content">
+            <h2>📈 Analytics & Trends</h2>
+            
+            <div id="analytics-content">
+                <div class="info-message">
+                    No data yet. Add some daily entries to see analytics!
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Explorer Tab -->
+        <div id="data-explorer" class="tab-content">
+            <h2>🔍 Data Explorer & Filtering</h2>
+            
+            <div id="data-explorer-content">
+                <div class="info-message">
+                    No data yet. Add some daily entries to explore!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global data storage
+        let entries = JSON.parse(localStorage.getItem('socialMediaEntries') || '[]');
+        
+        // Tab navigation
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked nav tab
+            event.target.classList.add('active');
+            
+            // Update content based on tab
+            updateTabContent(tabName);
+        }
+        
+        // Multiselect functionality
+        function toggleOption(element, value) {
+            element.classList.toggle('selected');
+            updateQuickSummary();
+        }
+        
+        // Update quick summary
+        function updateQuickSummary() {
+            const platforms = Array.from(document.querySelectorAll('#platforms-multiselect .selected')).map(el => el.textContent);
+            const postTypes = Array.from(document.querySelectorAll('#post-types-multiselect .selected')).map(el => el.textContent);
+            const followers = document.getElementById('followers-gained').value;
+            const likes = document.getElementById('likes').value;
+            const impressions = document.getElementById('impressions').value;
+            
+            let summary = '';
+            if (platforms.length > 0) {
+                summary += `<p><strong>Platforms:</strong> ${platforms.join(', ')}</p>`;
+            }
+            if (postTypes.length > 0) {
+                summary += `<p><strong>Content Types:</strong> ${postTypes.join(', ')}</p>`;
+            }
+            if (followers > 0) {
+                summary += `<p style="color: #28a745;"><strong>🎉 +${followers} new followers!</strong></p>`;
+            }
+            if (likes > 0) {
+                summary += `<p style="color: #17a2b8;"><strong>❤️ ${likes} total likes</strong></p>`;
+            }
+            if (impressions > 0) {
+                summary += `<p style="color: #17a2b8;"><strong>👁️ ${impressions} impressions</strong></p>`;
+            }
+            
+            if (summary === '') {
+                summary = '<p>Fill in the form to see a quick summary</p>';
+            }
+            
+            document.getElementById('quick-summary').innerHTML = summary;
+        }
+        
+        // Add event listeners for form inputs
+        document.getElementById('followers-gained').addEventListener('input', updateQuickSummary);
+        document.getElementById('likes').addEventListener('input', updateQuickSummary);
+        document.getElementById('impressions').addEventListener('input', updateQuickSummary);
+        
+        // Form submission
+        document.getElementById('entry-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const platforms = Array.from(document.querySelectorAll('#platforms-multiselect .selected')).map(el => el.textContent);
+            const postTypes = Array.from(document.querySelectorAll('#post-types-multiselect .selected')).map(el => el.textContent);
+            
+            if (platforms.length === 0) {
+                alert('Please select at least one platform');
+                return;
+            }
+            
+            const entry = {
+                id: Date.now(),
+                date: document.getElementById('entry-date').value,
+                platforms: platforms,
+                followers_gained: parseInt(document.getElementById('followers-gained').value) || 0,
+                likes: parseInt(document.getElementById('likes').value) || 0,
+                comments: parseInt(document.getElementById('comments').value) || 0,
+                impressions: parseInt(document.getElementById('impressions').value) || 0,
+                post_type: postTypes,
+                problems: document.getElementById('problems').value,
+                thoughts: document.getElementById('thoughts').value,
+                next_actions: document.getElementById('next-actions').value
+            };
+            
+            // Add to entries array
+            entries.unshift(entry);
+            
+            // Save to localStorage
+            localStorage.setItem('socialMediaEntries', JSON.stringify(entries));
+            
+            // Reset form
+            document.getElementById('entry-form').reset();
+            document.querySelectorAll('.multiselect-option').forEach(el => el.classList.remove('selected'));
+            updateQuickSummary();
+            
+            // Show success message
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = '✅ Entry saved successfully!';
+            document.getElementById('daily-entry').insertBefore(successDiv, document.getElementById('entry-form'));
+            
+            // Remove success message after 3 seconds
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+            
+            // Update all tab contents
+            updateAllTabs();
+        });
+        
+        // Update tab content based on current data
+        function updateTabContent(tabName) {
+            switch(tabName) {
+                case 'dashboard':
+                    updateDashboard();
+                    break;
+                case 'analytics':
+                    updateAnalytics();
+                    break;
+                case 'data-explorer':
+                    updateDataExplorer();
+                    break;
+            }
+        }
+        
+        // Update dashboard
+        function updateDashboard() {
+            if (entries.length === 0) {
+                document.getElementById('dashboard-content').innerHTML = `
+                    <div class="info-message">
+                        No data yet. Add some daily entries to see your dashboard!
+                    </div>
+                `;
+                return;
+            }
+            
+            const totalFollowers = entries.reduce((sum, entry) => sum + entry.followers_gained, 0);
+            const totalLikes = entries.reduce((sum, entry) => sum + entry.likes, 0);
+            const totalComments = entries.reduce((sum, entry) => sum + entry.comments, 0);
+            const totalImpressions = entries.reduce((sum, entry) => sum + entry.impressions, 0);
+            
+            // Platform counts
+            const platformCounts = {};
+            entries.forEach(entry => {
+                entry.platforms.forEach(platform => {
+                    platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+                });
+            });
+            
+            let platformChart = '';
+            Object.entries(platformCounts).forEach(([platform, count]) => {
+                const maxCount = Math.max(...Object.values(platformCounts));
+                const percentage = (count / maxCount) * 100;
+                platformChart += `
+                    <div class="chart-bar">
+                        <div class="chart-label">${platform}</div>
+                        <div class="chart-bar-visual">
+                            <div class="chart-bar-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <div class="chart-value">${count}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('dashboard-content').innerHTML = `
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Total Followers Gained</h3>
+                        <div class="value">+${totalFollowers.toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Likes</h3>
+                        <div class="value">${totalLikes.toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Comments</h3>
+                        <div class="value">${totalComments.toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Impressions</h3>
+                        <div class="value">${totalImpressions.toLocaleString()}</div>
+                    </div>
+                </div>
+                
+                <h3>📋 Recent Entries</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Platforms</th>
+                                <th>Followers</th>
+                                <th>Likes</th>
+                                <th>Comments</th>
+                                <th>Impressions</th>
+                                <th>Post Types</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${entries.slice(0, 10).map(entry => `
+                                <tr>
+                                    <td>${entry.date}</td>
+                                    <td>${entry.platforms.join(', ')}</td>
+                                    <td>${entry.followers_gained}</td>
+                                    <td>${entry.likes}</td>
+                                    <td>${entry.comments}</td>
+                                    <td>${entry.impressions}</td>
+                                    <td>${entry.post_type.join(', ')}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <h3>📱 Platform Activity</h3>
+                <div class="platform-chart">
+                    ${platformChart}
+                </div>
+                
+                ${totalImpressions > 0 ? `
+                    <h3>🎯 Engagement Rate</h3>
+                    <div class="metric-card" style="max-width: 300px;">
+                        <h3>Overall Engagement Rate</h3>
+                        <div class="value">${((totalLikes + totalComments) / totalImpressions * 100).toFixed(2)}%</div>
+                    </div>
+                ` : ''}
+            `;
+        }
+        
+        // Update analytics
+        function updateAnalytics() {
+            if (entries.length === 0) {
+                document.getElementById('analytics-content').innerHTML = `
+                    <div class="info-message">
+                        No data yet. Add some daily entries to see analytics!
+                    </div>
+                `;
+                return;
+            }
+            
+            const dates = entries.map(entry => entry.date).sort();
+            const minDate = dates[0];
+            const maxDate = dates[dates.length - 1];
+            
+            document.getElementById('analytics-content').innerHTML = `
+                <div class="filter-section">
+                    <h3>📅 Date Range Filter</h3>
+                    <div class="row">
+                        <div class="col">
+                            <label>Start Date: ${minDate}</label>
+                        </div>
+                        <div class="col">
+                            <label>End Date: ${maxDate}</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>📈 Growth Trends Summary</h3>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Total Followers in Period</h3>
+                        <div class="value">+${entries.reduce((sum, entry) => sum + entry.followers_gained, 0).toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Likes in Period</h3>
+                        <div class="value">${entries.reduce((sum, entry) => sum + entry.likes, 0).toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Comments in Period</h3>
+                        <div class="value">${entries.reduce((sum, entry) => sum + entry.comments, 0).toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Impressions in Period</h3>
+                        <div class="value">${entries.reduce((sum, entry) => sum + entry.impressions, 0).toLocaleString()}</div>
+                    </div>
+                </div>
+                
+                <h3>🏆 Best Performing Days</h3>
+                <div class="row">
+                    <div class="col">
+                        <div class="info-message">
+                            <strong>Best Day for Followers:</strong> ${entries.reduce((best, entry) => entry.followers_gained > best.followers_gained ? entry : best).date} (+${entries.reduce((best, entry) => entry.followers_gained > best.followers_gained ? entry : best).followers_gained})
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="info-message">
+                            <strong>Best Day for Likes:</strong> ${entries.reduce((best, entry) => entry.likes > best.likes ? entry : best).date} (${entries.reduce((best, entry) => entry.likes > best.likes ? entry : best).likes} likes)
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>📱 Platform Performance</h3>
+                ${generatePlatformPerformance()}
+            `;
+        }
+        
+        // Generate platform performance
+        function generatePlatformPerformance() {
+            const platformStats = {};
+            
+            entries.forEach(entry => {
+                entry.platforms.forEach(platform => {
+                    if (!platformStats[platform]) {
+                        platformStats[platform] = { posts: 0, followers: 0, likes: 0 };
+                    }
+                    platformStats[platform].posts++;
+                    platformStats[platform].followers += entry.followers_gained;
+                    platformStats[platform].likes += entry.likes;
+                });
+            });
+            
+            let html = '';
+            Object.entries(platformStats).forEach(([platform, stats]) => {
+                html += `
+                    <div class="info-message">
+                        <strong>${platform}:</strong> ${stats.posts} posts, +${stats.followers} followers, ${stats.likes} likes
+                    </div>
+                `;
+            });
+            
+            return html;
+        }
+        
+        // Update data explorer
+        function updateDataExplorer() {
+            if (entries.length === 0) {
+                document.getElementById('data-explorer-content').innerHTML = `
+                    <div class="info-message">
+                        No data yet. Add some daily entries to explore!
+                    </div>
+                `;
+                return;
+            }
+            
+            const platforms = [...new Set(entries.flatMap(entry => entry.platforms))];
+            
+            document.getElementById('data-explorer-content').innerHTML = `
+                <div class="filter-section">
+                    <h3>🔍 Advanced Filters</h3>
+                    <div class="filter-row">
+                        <div class="filter-group">
+                            <label>Filter by Platform</label>
+                            <select id="platform-filter" class="form-control">
+                                <option value="">All Platforms</option>
+                                ${platforms.map(platform => `<option value="${platform}">${platform}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Min Followers Gained</label>
+                            <input type="number" id="min-followers" class="form-control" min="0" value="0">
+                        </div>
+                        <div class="filter-group">
+                            <label>Min Likes</label>
+                            <input type="number" id="min-likes" class="form-control" min="0" value="0">
+                        </div>
+                    </div>
+                    <button onclick="applyFilters()" class="btn">🔍 Apply Filters</button>
+                </div>
+                
+                <div id="filtered-results">
+                    <div class="info-message">
+                        Use the filters above to explore your data
+                    </div>
+                </div>
+                
+                <div class="export-section">
+                    <h3>📤 Export Data</h3>
+                    <button onclick="exportData()" class="btn btn-primary">📥 Download CSV</button>
+                </div>
+            `;
+        }
+        
+        // Apply filters
+        function applyFilters() {
+            const platformFilter = document.getElementById('platform-filter').value;
+            const minFollowers = parseInt(document.getElementById('min-followers').value) || 0;
+            const minLikes = parseInt(document.getElementById('min-likes').value) || 0;
+            
+            let filteredEntries = entries;
+            
+            if (platformFilter) {
+                filteredEntries = filteredEntries.filter(entry => entry.platforms.includes(platformFilter));
+            }
+            
+            filteredEntries = filteredEntries.filter(entry => 
+                entry.followers_gained >= minFollowers && entry.likes >= minLikes
+            );
+            
+            displayFilteredResults(filteredEntries);
+        }
+        
+        // Display filtered results
+        function displayFilteredResults(filteredEntries) {
+            if (filteredEntries.length === 0) {
+                document.getElementById('filtered-results').innerHTML = `
+                    <div class="warning-message">
+                        No data matches your current filters. Try adjusting the criteria.
+                    </div>
+                `;
+                return;
+            }
+            
+            const totalFollowers = filteredEntries.reduce((sum, entry) => sum + entry.followers_gained, 0);
+            const totalLikes = filteredEntries.reduce((sum, entry) => sum + entry.likes, 0);
+            const totalImpressions = filteredEntries.reduce((sum, entry) => sum + entry.impressions, 0);
+            
+            document.getElementById('filtered-results').innerHTML = `
+                <h3>📊 Filtered Results (${filteredEntries.length} entries)</h3>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <h3>Total Followers</h3>
+                        <div class="value">+${totalFollowers.toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Likes</h3>
+                        <div class="value">${totalLikes.toLocaleString()}</div>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total Impressions</h3>
+                        <div class="value">${totalImpressions.toLocaleString()}</div>
+                    </div>
+                </div>
+                
+                <h3>📋 Filtered Data</h3>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Platforms</th>
+                                <th>Followers</th>
+                                <th>Likes</th>
+                                <th>Comments</th>
+                                <th>Impressions</th>
+                                <th>Post Types</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredEntries.map(entry => `
+                                <tr>
+                                    <td>${entry.date}</td>
+                                    <td>${entry.platforms.join(', ')}</td>
+                                    <td>${entry.followers_gained}</td>
+                                    <td>${entry.likes}</td>
+                                    <td>${entry.comments}</td>
+                                    <td>${entry.impressions}</td>
+                                    <td>${entry.post_type.join(', ')}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+        
+        // Export data to CSV
+        function exportData() {
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Date,Platforms,Followers_Gained,Likes,Comments,Impressions,Post_Type,Problems,Thoughts,Next_Actions\n"
+                + entries.map(entry => 
+                    `${entry.date},"${entry.platforms.join(', ')}",${entry.followers_gained},${entry.likes},${entry.comments},${entry.impressions},"${entry.post_type.join(', ')}","${entry.problems}","${entry.thoughts}","${entry.next_actions}"`
+                ).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `social_media_data_${new Date().toISOString().split('T')[0]}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        // Update all tabs
+        function updateAllTabs() {
+            updateDashboard();
+            updateAnalytics();
+            updateDataExplorer();
+        }
+        
+        // Initialize the app
+        function init() {
+            // Set default date to today
+            document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
+            
+            // Update all tabs
+            updateAllTabs();
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
